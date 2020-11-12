@@ -21,88 +21,26 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { Component } from "vue-property-decorator";
+import { sucursalService } from "@/services/Sucursal.service";
+import { SucursalInterface } from "@/types/Sucursal.interface";
 
-import { sucursalService } from '@/services/Sucursal.service';
-import { SucursalInterface } from '@/types/Sucursal.interface';
-
-export default Vue.extend({
-  name: "HelloWorld",
-
-  // props: {
-  //   sucursales: {
-  //     type: Object as () => SucursalInterface,
-  //   },
-  // },
+@Component
+export default class App extends Vue {
+  
+  public name: string = "HelloWorld";
+  public sucursales: any = [];
 
   async mounted() {
-    this.$data.sucursales = await sucursalService.getSucursales();
-    console.log(this.$data.sucursales);
-  },
+    this.sucursales = await sucursalService.getSucursales();
+    console.log(this.sucursales);
+  }
 
-  data: () => ({
-    headers: [
-      { text: 'Nombre', value: 'Nombre' },
-      { text: 'Direccion', value: 'Direccion' },
-      { text: 'Telefono', value: 'Telefono' },
-    ],
+  headers: any = [
+    { text: "Nombre", value: "Nombre" },
+    { text: "Direccion", value: "Direccion" },
+    { text: "Telefono", value: "Telefono" },
+  ];
 
-    sucursales: SucursalInterface,
-
-    ecosystem: [
-      {
-        text: "vuetify-loader",
-        href: "https://github.com/vuetifyjs/vuetify-loader",
-      },
-      {
-        text: "github",
-        href: "https://github.com/vuetifyjs/vuetify",
-      },
-      {
-        text: "awesome-vuetify",
-        href: "https://github.com/vuetifyjs/awesome-vuetify",
-      },
-    ],
-    importantLinks: [
-      {
-        text: "Documentation",
-        href: "https://vuetifyjs.com",
-      },
-      {
-        text: "Chat",
-        href: "https://community.vuetifyjs.com",
-      },
-      {
-        text: "Made with Vuetify",
-        href: "https://madewithvuejs.com/vuetify",
-      },
-      {
-        text: "Twitter",
-        href: "https://twitter.com/vuetifyjs",
-      },
-      {
-        text: "Articles",
-        href: "https://medium.com/vuetify",
-      },
-    ],
-    whatsNext: [
-      {
-        text: "Explore components",
-        href: "https://vuetifyjs.com/components/api-explorer",
-      },
-      {
-        text: "Select a layout",
-        href: "https://vuetifyjs.com/getting-started/pre-made-layouts",
-      },
-      {
-        text: "Frequently Asked Questions",
-        href:
-          "https://vuetifyjs.com/getting-started/frequently-asked-questions",
-      },
-    ],
-  }),
-});
+};
 </script>
-
-function newFunction() {
-  return new SucursalInterface();
-}

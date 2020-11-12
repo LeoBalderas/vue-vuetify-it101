@@ -42,12 +42,14 @@
 <script lang="ts">
 import Vue from "vue";
 import HelloWorld from "./components/HelloWorld.vue";
+// import ExampleClassTypescript from "./components/ExampleClassTypescript.vue";
 
 export default Vue.extend({
   name: "App",
 
   components: {
-    HelloWorld
+    HelloWorld,
+    // ExampleClassTypescript
   },
 
   data: () => ({
