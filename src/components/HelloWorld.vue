@@ -10,7 +10,7 @@
         />
         <v-data-table
           :headers="headers"
-          :items="sucursales"
+          :items="users"
           :items-per-page="5"
           class="elevation-1"
         ></v-data-table>
@@ -22,25 +22,27 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { sucursalService } from "@/services/Sucursal.service";
-import { SucursalInterface } from "@/types/Sucursal.interface";
+import { userService } from "@/services/user.service";
+// import { UserInterface } from "@/types/User.interface";
 
 @Component
 export default class App extends Vue {
   
   public name: string = "HelloWorld";
-  public sucursales: any = [];
+  public users: any = [];
 
   async mounted() {
-    this.sucursales = await sucursalService.getSucursales();
-    console.log(this.sucursales);
+    this.users = await userService.getSucursales();
+    console.log(this.users);
   }
 
   headers: any = [
-    { text: "Nombre", value: "Nombre" },
-    { text: "Direccion", value: "Direccion" },
-    { text: "Telefono", value: "Telefono" },
+    { text: "Nombre", value: "nombre" },
+    { text: "Apellido", value: "apellido"},
+    { text: "Dirección", value: "direccion" },
+    { text: "Teléfono", value: "telefono" },
   ];
 
 };
+
 </script>
