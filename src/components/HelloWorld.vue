@@ -23,14 +23,28 @@
             <td>{{item.direccion}}</td>
             <td>{{item.telefono}}</td>
             <td>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn color="primary" icon @click="openModal(item)" v-on="on">
-                    <v-icon>Editar</v-icon>
-                  </v-btn>
-                </template>
-                <span>Editar</span>
-              </v-tooltip>
+                <v-row class="text-center">
+                  <v-col>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
+                        <v-btn color="primary" icon @click="openModal(item)" v-on="on">
+                          <v-icon>Editar</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Editar</span>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
+                        <v-btn color="error" icon @click="openModalDelete(item)" v-on="on">
+                          <v-icon>Eliminar</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Eliminar</span>
+                    </v-tooltip>  
+                  </v-col> 
+                </v-row>            
             </td>
           </tr>
         </template>      
@@ -46,16 +60,6 @@
             persistent
             max-width="600px"
         >
-          <!-- <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                color="primary"
-                dark
-                v-bind="attrs"
-                v-on="on"
-            >
-              Open Dialog
-            </v-btn>
-          </template> -->
           <v-card>
             <v-card-title>
               <span class="headline">Editar Usuario</span>
@@ -122,6 +126,38 @@
       </v-row>
     </template>
 
+    <v-dialog
+      v-model="dialogDelete"
+      persistent
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title class="headline">
+          ¿Deseas eliminar el usuario seleccionado?
+        </v-card-title>
+        <v-card-text>Al confirmar la solicitud no podrás recupear el registro.</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialogDelete = false"
+          >
+            Cancelar
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="deleteUser"
+          >
+            Eliminar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    
+
   </v-container>
 </template>
 
@@ -137,6 +173,8 @@ export default class App extends Vue {
   public name: string = "HelloWorld";
   public users: any = [];
   public dialog: boolean = false;
+  public dialogDelete: boolean = false;
+
   public userSelected: UserInterface = {
     id: 0,
     nombre: '',
@@ -154,7 +192,7 @@ export default class App extends Vue {
   ];
 
   async mounted() {
-    this.users = await userService.getUsuarios();
+    this.users = await userService.getUsers();
     console.log(this.users);
   }
 
@@ -166,15 +204,30 @@ export default class App extends Vue {
     return this.dialog;
   }
 
-  public imprimir() {
+  public openModalDelete(user: UserInterface) {
+    this.dialogDelete = true;
+    this.userSelected = user;
     console.log(this.userSelected);
+
+    return this.dialogDelete;
   }
 
   public async editUser() {
     console.log('User to edit', this.userSelected);
     
-    const updateUser = await userService.updateUsuarios(this.userSelected);
+    const updateUser = await userService.updateUser(this.userSelected);
     console.log("Update from server ", updateUser);
+
+    this.dialog = false;
+  }
+
+  public async deleteUser() {
+    console.log('User to delete', this.userSelected);
+
+    const deleteUser = await userService.deleteUser(this.userSelected);
+    console.log("Delete from server ", deleteUser);
+
+    this.dialogDelete = false;
   }
 
 };
