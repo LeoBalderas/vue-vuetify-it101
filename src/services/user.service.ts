@@ -19,6 +19,12 @@ class UserService {
             .delete(`http://localhost:3000/usuario/${user.id}`)
             .then(response => response.data);
     }
+
+    public async saveUser(user: UserInterface) {
+        return await axios
+            .post<UserInterface[]>(`http://localhost:3000/usuario`, user)
+            .then(response => response.data);
+    }
 }
 
 export const userService = new UserService();

@@ -27,7 +27,7 @@
                   <v-col>
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on }">
-                        <v-btn color="primary" icon @click="openModal(item)" v-on="on">
+                        <v-btn color="primary" icon @click="openModalEdit(item)" v-on="on">
                           <v-icon>Editar</v-icon>
                         </v-btn>
                       </template>
@@ -56,7 +56,7 @@
     <template>
       <v-row justify="center">
         <v-dialog
-            v-model="dialog"
+            v-model="dialogEdit"
             persistent
             max-width="600px"
         >
@@ -156,6 +156,89 @@
       </v-card>
     </v-dialog>
 
+    <template>
+      <v-row justify="center">
+        <v-dialog
+            v-model="dialogAdd"
+            persistent
+            max-width="600px"
+        >
+      <template v-slot:activator="{ on }">
+        <v-btn
+          color="primary"
+          dark
+          v-on="on"
+          @click="openModalAdd(userNew)"
+        >
+          Open Dialog
+        </v-btn>
+      </template>
+          <v-card>
+            <v-card-title>
+              <span class="headline">Agregar Usuario</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field
+                        label="Nombre*"
+                        required
+                        v-model="userNew.nombre"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                  >
+                    <v-text-field
+                        label="Apellidos*"
+                        hint="example of persistent helper text"
+                        required
+                        v-model="userNew.apellido"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                        label="Dirección*"
+                        required
+                        v-model="userNew.direccion"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                        label="Teléfono*"
+                        required
+                        v-model="userNew.telefono"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <small>*Campos obligatorios</small>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="dialogAdd = false"
+              >
+                Cancelar
+              </v-btn>
+              <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="saveUser"
+              >
+                Guardar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
+
     
 
   </v-container>
@@ -172,10 +255,19 @@ export default class App extends Vue {
   
   public name: string = "HelloWorld";
   public users: any = [];
-  public dialog: boolean = false;
+  public dialogEdit: boolean = false;
   public dialogDelete: boolean = false;
+  public dialogAdd: boolean = false;
 
   public userSelected: UserInterface = {
+    id: 0,
+    nombre: '',
+    apellido: '',
+    direccion: '',
+    telefono: ''
+  }
+
+  public userNew: UserInterface = {
     id: 0,
     nombre: '',
     apellido: '',
@@ -196,12 +288,20 @@ export default class App extends Vue {
     console.log(this.users);
   }
 
-  public openModal(user: UserInterface) {
-    this.dialog = true;
+  public openModalAdd(user: UserInterface) {
+    this.dialogAdd = true;
+    this.userNew = user;
+    console.log(this.userNew);
+
+    return this.dialogAdd;
+  }  
+
+  public openModalEdit(user: UserInterface) {
+    this.dialogEdit = true;
     this.userSelected = user;
     console.log(this.userSelected);
 
-    return this.dialog;
+    return this.dialogEdit;
   }
 
   public openModalDelete(user: UserInterface) {
@@ -212,20 +312,29 @@ export default class App extends Vue {
     return this.dialogDelete;
   }
 
+  public async saveUser() {
+    console.log('User to save ', this.userNew);
+    
+    const saveUser = await userService.saveUser(this.userNew);
+    console.log("Saved to server ", saveUser);
+
+    this.dialogAdd = false;
+  }
+
   public async editUser() {
     console.log('User to edit', this.userSelected);
     
     const updateUser = await userService.updateUser(this.userSelected);
-    console.log("Update from server ", updateUser);
+    console.log("Updated from server ", updateUser);
 
-    this.dialog = false;
+    this.dialogEdit = false;
   }
 
   public async deleteUser() {
     console.log('User to delete', this.userSelected);
 
     const deleteUser = await userService.deleteUser(this.userSelected);
-    console.log("Delete from server ", deleteUser);
+    console.log("Deleted from server ", deleteUser);
 
     this.dialogDelete = false;
   }
